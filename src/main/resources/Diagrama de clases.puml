@@ -1,0 +1,77 @@
+@startuml
+
+class Hecho{
+
+    private String titulo
+    private String descripcion
+    private Categoria categoria
+    private Double latitud
+    private Double longitud
+    private Date fechaDelAcontecimiento
+    private Date fehcDeCarga
+    private Enum origen
+    private List<Solicitud> solicitudesEliminacion
+}
+
+class Categoria {
+
+    private String nombre
+}
+
+class Solicitud {
+
+    private String descripcion
+    private Hecho hechoAdherido
+    private Boolean aprobada
+}
+
+class Colecciones{
+
+    private String titulo
+    private String descripcion
+    private List<Hecho> hechos
+    public void agregarHecho(Hecho hecho)
+}
+
+class Fuente{
+
+    private String rutaArchivo;
+    public List<Hecho> obtenerHechos()
+
+}
+class Estatica extends Fuente {
+
+}
+class Dinamica extends Fuente {
+
+}
+
+class Visualizador {
+
+    public void agregarHecho(Hecho hecho)
+}
+
+class Persona extends Visualizador {
+
+    private String nombre
+    private String apellido
+    private Integer edad
+}
+
+class Contribuyente extends Persona {
+
+}
+
+class Administrador extends Persona {
+
+}
+
+Hecho "0..*" -- "1" Solicitud : solicitudesEliminacion
+Solicitud "1" -- "1" Hecho : hechoAdherido
+Colecciones "1" o-- "0..*" Hecho : hechos
+Fuente "1" --> "0..*" Hecho : administra
+Visualizador "1" --> "0..*" Hecho : muestra
+Persona "1" --> "0..*" Hecho : contribuye
+Hecho "1" --> "0..*" Categoria : categorizado
+
+@enduml
