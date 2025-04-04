@@ -36,7 +36,7 @@ public class Administrador {
                 String[] datos = linea.split(",");
 
                 // Delimita la cantidad de datos por linea y que las fechas sean correctas.
-                if(datos.length == 8 && esFechaValida(datos[5].trim(), "dd/MM/yyyy")){
+                if(datos.length == 8 && sonFechasValidas(datos[5].trim(), datos[6].trim(), "dd/MM/yyyy")){
                     Hecho hechoObtenido = new Hecho();
 
                     hechoObtenido.setTitulo(datos[0].trim());
@@ -53,7 +53,13 @@ public class Administrador {
                     // eliminando la necesidad de comprobaciones explícitas como `equalsIgnoreCase`.
                     mapaHechos.put(hechoObtenido.getTitulo().toLowerCase(), hechoObtenido);
                 } else {
-                    System.out.println("Línea con formato incorrecto: " + linea);
+                    if( datos.length != 8) {
+                        System.out.println("Línea con cantidad de datos incorrecta:");
+                        System.out.println(linea);
+                    } else {
+                        System.out.println("Fechas incorrectas:");
+                        System.out.println(linea);
+                    }
                     continue;
                 }
             }
@@ -69,7 +75,7 @@ public class Administrador {
         crearColeccion(tituloColeccion, descripcionColeccion, hechosImportados);
     }
 
-    public Boolean esFechaValida(String fecha, String formato){
+    public Boolean sonFechasValidas(String fecha1, String fecha2, String formato){
         try {
             // Utilizo SimpleDateFormat para formatear y analizar fechas, donde
             // recibe un formato que define como debe intrepretarse la fecha.
@@ -78,8 +84,9 @@ public class Administrador {
             // Impide fechas inexistentes, como 30/02/12.
             sdf.setLenient(false);
 
-            // Analiza la fecha recibida.
-            sdf.parse(fecha);
+            // Analiza las fechas recibidas.
+            sdf.parse(fecha1);
+            sdf.parse(fecha2);
 
             return true;
         } catch (ParseException e) {
