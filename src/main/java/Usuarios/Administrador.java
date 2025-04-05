@@ -51,14 +51,13 @@ public class Administrador {
 
         crearColeccion(tituloColeccion, descripcionColeccion, hechosImportados);
 
-        System.out.println("Total colecciones creadas: " + this.colecciones.size());
         System.out.println("Total líneas leídas: " + contadorLineas);
-        System.out.println("Total hechos importados: " + mapaHechos.size());
-        System.out.println("Total hechos con errores: " + contadorErrores);
+        System.out.println("Total hechos importados: " + hechosImportados.size());
         System.out.println("Total hechos repetidos: " + contadorRepetidos);
+        System.out.println("Total hechos con errores: " + contadorErrores);
     }
 
-    public void almacenarHecho(String titulo, String descripcion, String categoria, Double latitud, Double longitud, String fechaAcontecimiento, Integer cantidadDatos, String lineaLeida, LinkedHashMap<String, Hecho> mapaHechosImportados) {
+    public void almacenarHecho(String titulo, String descripcion, String categoria, Double latitud, Double longitud, String fechaAcontecimiento, Integer cantidadDatos, String lineaLeida, LinkedHashMap<String, Hecho> hechosImportados) {
         if(cantidadDatos == 6 && fechaValida(fechaAcontecimiento, "dd/MM/yyyy")) {
             Hecho hechoObtenido = new Hecho();
 
@@ -69,16 +68,13 @@ public class Administrador {
             hechoObtenido.setLongitud(longitud);
             hechoObtenido.setFechaDelAcontecimiento(fechaAcontecimiento);
 
-            if(!analizarHechoRepetido(hechoObtenido, mapaHechosImportados)) {
-                agregarHecho(hechoObtenido, mapaHechosImportados);
-            } else {
+            if(analizarHechoRepetido(hechoObtenido, hechosImportados)) {
                 System.out.println("Hecho repetido y actualizado: " + titulo);
-
-                // Sobrescribo con el nuevo hecho.
-                agregarHecho(hechoObtenido, mapaHechosImportados);
 
                 contadorRepetidos++;
             }
+
+            agregarHecho(hechoObtenido, hechosImportados);
         } else {
             corroborarError(cantidadDatos, fechaAcontecimiento, "dd/MM/yyyy", lineaLeida);
 
@@ -86,13 +82,14 @@ public class Administrador {
         }
     }
 
-    public Boolean analizarHechoRepetido(Hecho nuevoHecho, LinkedHashMap<String, Hecho> hechosAImportar) {
-        // Verifico si el mapa de hechos ya contiene un hecho con el mismo título.
-        return hechosAImportar.containsKey(nuevoHecho.getTitulo());
+    public Boolean analizarHechoRepetido(Hecho nuevoHecho, LinkedHashMap<String, Hecho> listaHechosActuales) {
+        // Verifico si la lista de hechos ya contiene un hecho con el mismo título.
+        return listaHechosActuales.containsKey(nuevoHecho.getTitulo());
     }
 
-    public void agregarHecho(Hecho hecho, LinkedHashMap<String, Hecho> hechosAImportar) {
-        hechosAImportar.put(hecho.getTitulo(), hecho);
+    public void agregarHecho(Hecho hecho, LinkedHashMap<String, Hecho> listaHechosActuales) {
+        // Si el titulo ya se encuentra en la lista, el nuevo hecho pisa automaticamente al viejo.
+        listaHechosActuales.put(hecho.getTitulo(), hecho);
     }
 
     public void corroborarError(Integer cantidadDatos, String fecha, String formato, String lineaLeida) {
@@ -101,10 +98,10 @@ public class Administrador {
             System.out.println(lineaLeida);
             System.out.println("Se esperaban 6 datos, pero se encontraron " + cantidadDatos);
         } else if (!fechaValida(fecha, formato)){
-            System.out.println("Fecha incorrecta:");
+            System.out.println("Linea con fecha incorrecta:");
             System.out.println(lineaLeida);
         } else {
-            System.out.println("Error desconocido en linea: ");
+            System.out.println("Linea con error desconocido:");
             System.out.println(lineaLeida);
         }
     }
@@ -128,7 +125,7 @@ public class Administrador {
             // Impide fechas inexistentes, como 30/02/12.
             sdf.setLenient(false);
 
-            // Analiza las fechas recibidas.
+            // Analiza la fecha recibida.
             sdf.parse(fecha);
 
             return true;
