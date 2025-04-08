@@ -1,6 +1,7 @@
 package main;
 
 import hechos.Categoria;
+import hechos.Coleccion;
 import hechos.Hecho;
 import usuarios.Administrador;
 import usuarios.Contribuyente;
@@ -16,24 +17,44 @@ import java.net.URL;
 public class Main {
     /**
      * Método principal de la aplicación.
-     *
-     * @param args Argumentos proporcionados desde la línea de comandos.
-     * @throws URISyntaxException Si la ruta del archivo a importar no es válida.
      */
     public static void main(String[] args) throws URISyntaxException {
 
         Administrador administrador = new Administrador();
 
-        File archivoAimportar;
+        File archivoAimportar1;
+        File archivoAimportar2;
+        File archivoAimportar3;
 
-        URL url = Main.class.getClassLoader().getResource("desastres_tecnologicos_argentina.csv");
-        if (url == null) {
+        URL url1 = Main.class.getClassLoader().getResource("desastres_tecnologicos_argentina.csv");
+        URL url2 = Main.class.getClassLoader().getResource("desastres_sanitarios_contaminacion_argentina.csv");
+        URL url3 = Main.class.getClassLoader().getResource("desastres_naturales_argentina.csv");
+        if (url1 == null) {
             throw new IllegalArgumentException("El archivo 'desastres_tecnologicos_argentina.csv' no se encuentra en el paquete resources.");
+        } else if (url2 == null) {
+            throw new IllegalArgumentException("El archivo 'desastres_sanitarios_contaminacion_argentina.csv' no se encuentra en el paquete resources.");
+        } else if (url3 == null) {
+            throw new IllegalArgumentException("El archivo 'desastres_naturales_argentina.csv' no se encuentra en el paquete resources.");
         }
-        // Obtengo la ruta del archivo hechosAImportar dentro del paquete resources
-        archivoAimportar = new File(url.toURI());
+        // Obtengo la ruta de los archivos hechosAImportar dentro del paquete resources
+        archivoAimportar1 = new File(url1.toURI());
+        archivoAimportar2 = new File(url2.toURI());
+        archivoAimportar3 = new File(url3.toURI());
 
-        administrador.importarHechos(archivoAimportar.getAbsolutePath(), "primera coleccion", "esta es la primera coleccion");
+        administrador.importarHechos(archivoAimportar1.getAbsolutePath(), "primera coleccion", "esta es la primera coleccion");
+        administrador.importarHechos(archivoAimportar2.getAbsolutePath(), "segunda coleccion", "esta es la segunda coleccion");
+        administrador.importarHechos(archivoAimportar3.getAbsolutePath(), "tercera coleccion", "esta es la tercera coleccion");
+
+        for (Coleccion coleccion : administrador.getColecciones()) {
+            System.out.println(coleccion.getTitulo());
+            System.out.println(coleccion.getDescripcion());
+            System.out.println("Total líneas leídas: " + coleccion.getContadorLineas());
+            System.out.println("Total hechos listados: " + (coleccion.getHechos().size() - coleccion.getContadorErrores() - coleccion.getContadorRepetidos()));
+            System.out.println("Total hechos repetidos: " + coleccion.getContadorRepetidos());
+            System.out.println("Total hechos con errores: " + coleccion.getContadorErrores());
+        }
+
+        /*
 
         Hecho hecho = new Hecho();
         Categoria categoria = new Categoria();
@@ -62,5 +83,7 @@ public class Main {
         } else {
             System.out.println("No se registró ninguna solicitud de eliminación.");
         }
+
+        */
     }
 }
