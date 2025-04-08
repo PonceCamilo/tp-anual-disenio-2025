@@ -1,81 +1,90 @@
-package Usuarios;
+package usuarios;
 
-import Hechos.Coleccion;
-import Hechos.Hecho;
-import Hechos.Solicitud;
-import lombok.Getter;
-import lombok.Setter;
-
+import hechos.Categoria;
+import hechos.Coleccion;
+import hechos.Hecho;
+import hechos.Solicitud;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * Clase Administrador. Va a representar a cada administrador que se loguee en nuestra app.
+ */
 @Getter
 @Setter
 public class Administrador {
 
-    private List<Coleccion> colecciones = new ArrayList<>();
+    private List<Coleccion> colecciones;
     private int contadorLineas;
     private int contadorRepetidos;
     private int contadorErrores;
 
-    public void importarHechos(String rutaArchivo, String tituloColeccion, String descripcionColeccion) {
-        // Uso un LinkedHashMap para manejar hechos únicos, basados en el título y
-        // garantizar su orden de inserción.
-        LinkedHashMap<String, Hecho> mapaHechos = new LinkedHashMap<>();
+    public Administrador() {
+        this.colecciones = new ArrayList<>();
+    }
 
+    /**
+     * Metodo para importar hechos desde archivos de tipo CSV.
+     */
+    public void importarHechos(String rutaArchivo, String tituloColeccion, String descripcionColeccion) {
         // intento acceder al archivo CSV.
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
 
+            crearColeccion(tituloColeccion, descripcionColeccion);
+
             // Consulto si la línea que se está leyendo tiene el formato correcto.
             while ((linea = br.readLine()) != null) {
-                contadorLineas ++;
+                contadorLineas++;
 
                 // Hace que el delimitador sea una coma.
                 // Asegura que las comas fuera de las comillas dobles sean las que se utilicen como separadores.
                 String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-                almacenarHecho(datos[0].trim(), datos[1].trim(), datos[2].trim(), Double.valueOf(datos[3].trim()), Double.valueOf(datos[4].trim()), datos[5].trim(), datos.length, linea, mapaHechos);
+                almacenarHecho(datos[0].trim(), datos[1].trim(), datos[2].trim(), Double.valueOf(datos[3].trim()), Double.valueOf(datos[4].trim()), datos[5].trim(), datos.length, linea, colecciones.get(0));
             }
         } catch (IOException e) {
             System.out.println("Error al leer el archivo CSV: " + e.getMessage());
         }
 
-        // Obtengo los valores del mapa como una lista para pasarlos a las colecciones.
-        List<Hecho> hechosImportados = new ArrayList<>(mapaHechos.values());
-
-        crearColeccion(tituloColeccion, descripcionColeccion, hechosImportados);
-
         System.out.println("Total líneas leídas: " + contadorLineas);
-        System.out.println("Total hechos importados: " + hechosImportados.size());
+        System.out.println("Total hechos listados: " + (this.colecciones.get(0).getHechos().size() - contadorErrores - contadorRepetidos));
         System.out.println("Total hechos repetidos: " + contadorRepetidos);
         System.out.println("Total hechos con errores: " + contadorErrores);
     }
 
-    public void almacenarHecho(String titulo, String descripcion, String categoria, Double latitud, Double longitud, String fechaAcontecimiento, Integer cantidadDatos, String lineaLeida, LinkedHashMap<String, Hecho> hechosImportados) {
-        if(cantidadDatos == 6 && fechaValida(fechaAcontecimiento, "dd/MM/yyyy")) {
-            Hecho hechoObtenido = new Hecho();
-
-            hechoObtenido.setTitulo(titulo);
-            hechoObtenido.setDescripcion(descripcion);
-            hechoObtenido.setCategoria(categoria);
-            hechoObtenido.setLatitud(latitud);
-            hechoObtenido.setLongitud(longitud);
-            hechoObtenido.setFechaDelAcontecimiento(fechaAcontecimiento);
-
-            if(analizarHechoRepetido(hechoObtenido, hechosImportados)) {
+    /**
+     * Metodo para almacenar un hecho en la lista de hechos no repetidos y sin errores.
+     */
+    public void almacenarHecho(String titulo, String descripcion, String categoria, Double latitud, Double longitud, String fechaAcontecimiento, Integer cantidadDatos, String lineaLeida, Coleccion coleccionCreada) {
+        if (cantidadDatos == 6 && fechaValida(fechaAcontecimiento, "dd/MM/yyyy")) {
+            if (analizarHechoRepetido(titulo, this.colecciones.get(0).getHechos())) {
                 System.out.println("Hecho repetido y actualizado: " + titulo);
 
                 contadorRepetidos++;
             }
 
-            agregarHecho(hechoObtenido, hechosImportados);
+            Categoria categoriaObtenida = new Categoria();
+
+            categoriaObtenida.setNombre(categoria);
+
+            Hecho hechoObtenido = new Hecho();
+
+            hechoObtenido.setTitulo(titulo);
+            hechoObtenido.setDescripcion(descripcion);
+            hechoObtenido.setCategoria(categoriaObtenida);
+            hechoObtenido.setLatitud(latitud);
+            hechoObtenido.setLongitud(longitud);
+            hechoObtenido.setFechaDelAcontecimiento(fechaAcontecimiento);
+
+            coleccionCreada.agregarHecho(hechoObtenido);
         } else {
             corroborarError(cantidadDatos, fechaAcontecimiento, "dd/MM/yyyy", lineaLeida);
 
@@ -83,22 +92,20 @@ public class Administrador {
         }
     }
 
-    public Boolean analizarHechoRepetido(Hecho nuevoHecho, LinkedHashMap<String, Hecho> listaHechosActuales) {
+    public Boolean analizarHechoRepetido(String tituloHecho, List<Hecho> listaHechosActuales) {
         // Verifico si la lista de hechos ya contiene un hecho con el mismo título.
-        return listaHechosActuales.containsKey(nuevoHecho.getTitulo());
+        return listaHechosActuales.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(tituloHecho));
     }
 
-    public void agregarHecho(Hecho hecho, LinkedHashMap<String, Hecho> listaHechosActuales) {
-        // Si el titulo ya se encuentra en la lista, el nuevo hecho pisa automaticamente al viejo.
-        listaHechosActuales.put(hecho.getTitulo(), hecho);
-    }
-
+    /**
+     * Metodo para corroborar cuál fue el error que tuvo algún hecho, por el cual no pudo ser almacenado.
+     */
     public void corroborarError(Integer cantidadDatos, String fecha, String formato, String lineaLeida) {
-        if(cantidadDatos != 6) {
+        if (cantidadDatos != 6) {
             System.out.println("Línea con cantidad de datos incorrecta:");
             System.out.println(lineaLeida);
             System.out.println("Se esperaban 6 datos, pero se encontraron " + cantidadDatos);
-        } else if (!fechaValida(fecha, formato)){
+        } else if (!fechaValida(fecha, formato)) {
             System.out.println("Linea con fecha incorrecta:");
             System.out.println(lineaLeida);
         } else {
@@ -107,17 +114,22 @@ public class Administrador {
         }
     }
 
-    public void crearColeccion(String titulo, String descripcion, List<Hecho> hechos){
+    /**
+     * Metodo para crear la coleccion donde se van a almacenar varios hechos.
+     */
+    public void crearColeccion(String titulo, String descripcion) {
         Coleccion nuevaColeccion = new Coleccion();
 
         nuevaColeccion.setTitulo(titulo);
         nuevaColeccion.setDescripcion(descripcion);
-        nuevaColeccion.setHechos(hechos);
 
         this.colecciones.add(nuevaColeccion);
     }
 
-    public Boolean fechaValida(String fecha, String formato){
+    /**
+     * Metodo para comprobar si la fecha enviada es valida o no.
+     */
+    public Boolean fechaValida(String fecha, String formato) {
         try {
             // Utilizo SimpleDateFormat para formatear y analizar fechas, donde
             // recibe un formato que define como debe interpretarse la fecha.
@@ -135,16 +147,21 @@ public class Administrador {
         }
     }
 
-    public void revisarSolicitud(Solicitud solicitud) {
-        solicitud.setAprobada(true);
+    /**
+     * Metodo para aprobar una solicitud de eliminacion.
+     */
+    public void aceptarSolicitud(Solicitud solicitud) {
+        Hecho hecho = solicitud.getHechoSolicitado();
 
-        if(solicitud.getAprobada()){
-            solicitud.getHechoSolicitado().agregarSolicitud(solicitud);
-            System.out.println("Solicitud aprobada y agregada al hecho.");
-        } else {
-            System.out.println("Solicitud rechazada.");
-        }
+        hecho.setVisualizarHecho(false);
     }
 
-    //TODO
+    /**
+     * Metodo para rechazar una solicitud de eliminacion.
+     */
+    public void rechazarSolicitud(Solicitud solicitud) {
+        Hecho hecho = solicitud.getHechoSolicitado();
+
+        hecho.getSolicitudesEliminacion().remove(solicitud);
+    }
 }
