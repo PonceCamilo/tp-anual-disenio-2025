@@ -8,6 +8,7 @@ import usuarios.Contribuyente;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Clase principal de la aplicación.
@@ -29,6 +30,7 @@ public class Main {
         URL url1 = Main.class.getClassLoader().getResource("desastres_tecnologicos_argentina.csv");
         URL url2 = Main.class.getClassLoader().getResource("desastres_sanitarios_contaminacion_argentina.csv");
         URL url3 = Main.class.getClassLoader().getResource("desastres_naturales_argentina.csv");
+
         if (url1 == null) {
             throw new IllegalArgumentException("El archivo 'desastres_tecnologicos_argentina.csv' no se encuentra en el paquete resources.");
         } else if (url2 == null) {
@@ -36,6 +38,7 @@ public class Main {
         } else if (url3 == null) {
             throw new IllegalArgumentException("El archivo 'desastres_naturales_argentina.csv' no se encuentra en el paquete resources.");
         }
+
         // Obtengo la ruta de los archivos hechosAImportar dentro del paquete resources
         archivoAimportar1 = new File(url1.toURI());
         archivoAimportar2 = new File(url2.toURI());
@@ -52,9 +55,8 @@ public class Main {
             System.out.println("Total hechos listados: " + (coleccion.getHechos().size() - coleccion.getContadorErrores() - coleccion.getContadorRepetidos()));
             System.out.println("Total hechos repetidos: " + coleccion.getContadorRepetidos());
             System.out.println("Total hechos con errores: " + coleccion.getContadorErrores());
+            System.out.println(" ");
         }
-
-        /*
 
         Hecho hecho = new Hecho();
         Categoria categoria = new Categoria();
@@ -69,11 +71,11 @@ public class Main {
         hecho.setFechaDelAcontecimiento("2023-01-15");
         hecho.setFechaDeCarga("2023-01-16");
         hecho.setOrigen("Usuario");
-        hecho.setSolicitudesEliminacion(new java.util.ArrayList<>());
-
-        String descripcionSolicitud = "Este hecho contiene información inexacta y necesita ser eliminado.";
+        hecho.setSolicitudesEliminacion(new ArrayList<>());
 
         Contribuyente contribuyente = new Contribuyente();
+
+        String descripcionSolicitud = "Este hecho contiene información inexacta y necesita ser eliminado.";
 
         contribuyente.solicitarEliminacionHecho(descripcionSolicitud, hecho);
 
@@ -84,6 +86,6 @@ public class Main {
             System.out.println("No se registró ninguna solicitud de eliminación.");
         }
 
-        */
+        administrador.aceptarSolicitud(hecho.getSolicitudesEliminacion().get(0));
     }
 }

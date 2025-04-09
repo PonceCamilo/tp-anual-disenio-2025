@@ -33,20 +33,20 @@ public class Administrador {
     public void importarHechos(String rutaArchivo, String tituloColeccion, String descripcionColeccion) {
         // intento acceder al archivo CSV.
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
-          String linea;
+            String linea;
 
-          crearColeccion(tituloColeccion, descripcionColeccion);
-          Coleccion ultimaColeccion = colecciones.get(colecciones.size() - 1);
-          // Consulto si la línea que se está leyendo tiene el formato correcto.
-          while ((linea = br.readLine()) != null) {
-            ultimaColeccion.contadorLineas();
+            crearColeccion(tituloColeccion, descripcionColeccion);
+            Coleccion ultimaColeccion = colecciones.get(colecciones.size() - 1);
+            // Consulto si la línea que se está leyendo tiene el formato correcto.
+            while ((linea = br.readLine()) != null) {
+                ultimaColeccion.setContadorLineas(ultimaColeccion.getContadorLineas() + 1);
 
-            // Hace que el delimitador sea una coma.
-            // Asegura que las comas fuera de las comillas dobles sean las que se utilicen como separadores.
-            String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                // Hace que el delimitador sea una coma.
+                // Asegura que las comas fuera de las comillas dobles sean las que se utilicen como separadores.
+                String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-            almacenarHecho(datos[0].trim(), datos[1].trim(), datos[2].trim(), Double.valueOf(datos[3].trim()), Double.valueOf(datos[4].trim()), datos[5].trim(), datos.length, linea, ultimaColeccion);
-          }
+                almacenarHecho(datos[0].trim(), datos[1].trim(), datos[2].trim(), Double.valueOf(datos[3].trim()), Double.valueOf(datos[4].trim()), datos[5].trim(), datos.length, linea, ultimaColeccion);
+            }
         } catch (IOException e) {
             System.out.println("Error al leer el archivo CSV: " + e.getMessage());
         }
@@ -59,9 +59,7 @@ public class Administrador {
         if (cantidadDatos == 6 && fechaValida(fechaAcontecimiento, "dd/MM/yyyy")) {
 
             if (analizarHechoRepetido(titulo, coleccionCreada.getHechos())) {
-                // System.out.println("Hecho repetido y actualizado: " + titulo);
-
-                coleccionCreada.contadorRepetidos();
+                coleccionCreada.setContadorRepetidos(coleccionCreada.getContadorRepetidos() + 1);
             }
 
             Categoria categoriaObtenida = new Categoria();
@@ -81,7 +79,7 @@ public class Administrador {
         } else {
             corroborarError(cantidadDatos, fechaAcontecimiento, "dd/MM/yyyy", lineaLeida);
 
-            coleccionCreada.contadorErrores();
+            coleccionCreada.setContadorErrores(coleccionCreada.getContadorErrores() + 1);
         }
     }
 
@@ -147,6 +145,8 @@ public class Administrador {
         Hecho hecho = solicitud.getHechoSolicitado();
 
         hecho.setVisualizarHecho(false);
+
+        System.out.println("solicitud aprobada y hecho: " + hecho.getTitulo() + ", eliminado con exito");
     }
 
     /**
@@ -156,5 +156,7 @@ public class Administrador {
         Hecho hecho = solicitud.getHechoSolicitado();
 
         hecho.getSolicitudesEliminacion().remove(solicitud);
+
+        System.out.println("solicitud rechazada");
     }
 }
