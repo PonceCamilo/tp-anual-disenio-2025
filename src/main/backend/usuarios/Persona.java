@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Clase Persona, para definir a cada persona que acceda a nuestro sistema, sea denominada como sea.
+ * Clase Persona, para definir a cada persona que acceda a nuestro sistema.
  */
 @Getter
 @Setter

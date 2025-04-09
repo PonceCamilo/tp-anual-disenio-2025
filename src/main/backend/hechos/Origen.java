@@ -1,7 +1,7 @@
 package hechos;
 
 /**
- * Posibles origenes del hecho provisto.
+ * Posibles orígenes del hecho provisto.
  */
 public enum Origen {
   CONTRIBUYENTE,

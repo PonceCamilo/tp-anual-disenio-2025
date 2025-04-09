@@ -3,6 +3,7 @@ package usuarios;
 import hechos.Categoria;
 import hechos.Coleccion;
 import hechos.Hecho;
+import hechos.ManagerCategorias;
 import hechos.Solicitud;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,11 +22,8 @@ import lombok.Setter;
 @Setter
 public class Administrador {
 
-    private List<Coleccion> colecciones;
-
-    public Administrador() {
-        this.colecciones = new ArrayList<>();
-    }
+    private ManagerCategorias managerCategorias = new ManagerCategorias();
+    public List<Coleccion> colecciones = new ArrayList<>();
 
     /**
      * Metodo para importar hechos desde archivos de tipo CSV.
@@ -62,11 +60,13 @@ public class Administrador {
                 coleccionCreada.setContadorRepetidos(coleccionCreada.getContadorRepetidos() + 1);
             }
 
+            managerCategorias.posibleNuevaCategoria(categoria);
+
             Categoria categoriaObtenida = new Categoria();
-
-            categoriaObtenida.setNombre(categoria);
-
             Hecho hechoObtenido = new Hecho();
+
+            // Normalizo la categoria para que no haya repetidas.
+            categoriaObtenida.setNombre(managerCategorias.normalizarCategoria(categoria));
 
             hechoObtenido.setTitulo(titulo);
             hechoObtenido.setDescripcion(descripcion);
@@ -83,6 +83,9 @@ public class Administrador {
         }
     }
 
+    /**
+     * Metodo para verificar si el hecho ya existe en la lista de hechos.
+     */
     public Boolean analizarHechoRepetido(String tituloHecho, List<Hecho> listaHechosActuales) {
         // Verifico si la lista de hechos ya contiene un hecho con el mismo título.
         return listaHechosActuales.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(tituloHecho));
@@ -134,6 +137,8 @@ public class Administrador {
 
             return true;
         } catch (ParseException e) {
+            // Si la fecha no es válida, lanza una excepcion.
+            System.out.println("La fecha " + fecha + " no es válida.");
             return false;
         }
     }

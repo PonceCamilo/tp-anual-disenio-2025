@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Clase Solicitud, la cual representara cada solicitud de eliminacion de hecho.
+ * Clase Solicitud, la cual representara cada solicitud de eliminacion de un hecho.
  */
 @Getter
 @Setter

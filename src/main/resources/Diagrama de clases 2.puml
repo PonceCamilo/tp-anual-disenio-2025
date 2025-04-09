@@ -1,0 +1,111 @@
+@startuml
+class Visualizador
+
+abstract class Persona{
+    - String nombre
+    - String apellido
+}
+
+class Administrador extends Persona{
+    + void crearColeccion(String titulo, String descripcion)
+    + void importHechosDesdeArchivo(Coleccion coleccion)
+    + void aceptarSolicitud(Solicitud solicitud)
+    + void rechazarSolicitud(Solicitud solicitud)
+    + void etiquetarhecho(Hecho hecho)
+}
+
+class Contribuyente extends Persona{
+    - Interger edad
+    + void crearHecho(titulo, descripcion, latitud, longitud, fechaAcontecimiento)
+    + void solicitarEliminacionDeHecho(Hecho hecho)
+}
+
+class Hecho{
+    - Boolean Eliminado
+    - String titulo
+    - String descripcion
+    - String categoria
+    - Ubicacion CoordenadasDelHecho
+    - DateTime fechaAcontecimiento
+    - DateTime fechaCarga
+    - Origen OrigenHecho
+}
+
+class Ubicacion{
+    - float latitud
+    - float longitud
+}
+
+enum Origen {
+    MANUAL
+    DATASET
+    CONTRIBUYENTE
+}
+
+class Coleccion{
+    - String titulo
+    - String descripcion
+    - FuenteEstatica fuente
+    - List<Hecho> hechos
+    - List<CriterioDePertenencia> criteriosDepertenencia
+    + List<Hecho> buscarHechosConFiltros(List<Filtros>)
+    + List<Hecho> importarHechos()
+    + void agregarHecho(Hecho)
+    + void quitarHecho(Hecho)
+    + void agregarCriterio(CriterioDePertenencia)
+    + void quitarCriterio(CriterioDePertenencia)
+}
+
+abstract class Fuente{
+    - String ubicacionDelArchivo
+    + List<Hecho> obtenerHechos()
+}
+
+ class FuenteEstatica extends Fuente{
+    + List<Hecho> obtenerHechos()
+}
+
+ class FuenteDinamica extends Fuente{
+    + List<Hecho> obtenerHechos()
+}
+
+ class FuenteProxy extends Fuente{
+    + List<Hecho> obtenerHechos()
+}
+
+interface CriterioDePertenencia{
+    + Boolean evaluarCriterio()
+}
+
+class CriterioCategoria implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
+}
+
+class CriterioRangoFecha implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
+}
+
+class Criterioubicacion implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
+}
+
+class SolicitudDeEliminacion{
+    - Hecho hecho
+    - String motivo
+    - Estado estado
+}
+
+enum Estado{
+    PENDIENTE
+    ACEPTADO
+}
+
+Coleccion --> CriterioDePertenencia
+Coleccion --> Fuente
+Hecho --> Origen
+Hecho --> Ubicacion
+SolicitudDeEliminacion --> Hecho
+SolicitudDeEliminacion --> Estado
+
+
+@enduml

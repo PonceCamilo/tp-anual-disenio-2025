@@ -6,37 +6,35 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Clase ManagerCategorias, va a representar un conjunto de categorías no repetidas.
+ */
 @Getter
 @Setter
 public class ManagerCategorias {
-  private final Set<String> categorias;
-
-  public ManagerCategorias() {
-    this.categorias = new HashSet<>();
-  }
+  public final Set<String> categorias = new HashSet<>();
 
   /**
    * Normaliza una categoría eliminando espacios, caracteres especiales
-   * y acentos (diacríticos).
-   *
-   * @param categoria La categoría a normalizar.
-   * @return El texto completamente normalizado.
+   * y acentos.
    */
-  private String normalizarCategoria(String categoria) {
+  public String normalizarCategoria(String categoria) {
     if (categoria == null) {
       return "";
     }
-    // Eliminar espacios redundantes
+    // Elimina los espacios redundantes.
     String limpiado = categoria.trim().replaceAll("\\s+", " ");
 
-    // Convertir a minúsculas (puedes usar toUpperCase() si prefieres mayúsculas)
+    // Convierte mayúsculas a minúsculas (se puede usar toUpperCase() si prefiriéramos mayúsculas).
     limpiado = limpiado.toLowerCase();
 
-    // Eliminar tildes y otros diacríticos
+    // Elimina las tildes.
     limpiado = Normalizer.normalize(limpiado, Normalizer.Form.NFD);
-    limpiado = limpiado.replaceAll("\\p{M}", ""); // Quita marcas de acentos
 
-    // Eliminar caracteres especiales (comas, puntos, comillas, etc.)
+    // Quita marcas de acentos
+    limpiado = limpiado.replaceAll("\\p{M}", "");
+
+    // Elimina los caracteres especiales (comas, puntos, comillas, etc.)
     limpiado = limpiado.replaceAll("[^a-z0-9 ]", ""); // Solo deja letras, números y espacios
 
     return limpiado;
@@ -44,19 +42,14 @@ public class ManagerCategorias {
 
   /**
    * Agrega una categoría si no está repetida, usando la normalización.
-   *
-   * @param categoria La categoría a agregar.
-   * @return true si la categoría fue agregada, false si ya existía.
    */
-  public boolean agregarCategoria(String categoria) {
-    // Normalizar la categoría antes de comparar
+  public void posibleNuevaCategoria(String categoria) {
+    // Normaliza la categoría antes de comparar
     String normalizada = normalizarCategoria(categoria);
 
-    // Intentar agregar al HashSet (false si ya existe)
-    return categorias.add(normalizada);
-  }
-
-  public Set<String> getCategorias() {
-    return categorias;
+    // Intenta agregar al HashSet.
+    // Al ser un HashSet la lista de categorias, si no existe,
+    // la agrega, pero si ya existe, no hace nada. Impide repetidos.
+    categorias.add(normalizada);
   }
 }

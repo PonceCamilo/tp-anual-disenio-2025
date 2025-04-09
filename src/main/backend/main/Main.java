@@ -51,7 +51,7 @@ public class Main {
         for (Coleccion coleccion : administrador.getColecciones()) {
             System.out.println(coleccion.getTitulo());
             System.out.println(coleccion.getDescripcion());
-            System.out.println("Total líneas leídas: " + coleccion.getContadorLineas());
+            System.out.println("Total hechos leídos: " + coleccion.getContadorLineas());
             System.out.println("Total hechos listados: " + (coleccion.getHechos().size() - coleccion.getContadorErrores() - coleccion.getContadorRepetidos()));
             System.out.println("Total hechos repetidos: " + coleccion.getContadorRepetidos());
             System.out.println("Total hechos con errores: " + coleccion.getContadorErrores());

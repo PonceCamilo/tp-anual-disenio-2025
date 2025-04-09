@@ -19,12 +19,8 @@ public class Hecho {
     private String fechaDelAcontecimiento;
     private String fechaDeCarga;
     private String origen;
-    private Boolean visualizarHecho;
     private List<Solicitud> solicitudesEliminacion;
-
-    public Hecho() {
-        this.visualizarHecho = true;
-    }
+    public Boolean visualizarHecho = true;
 
     public void agregarSolicitud(Solicitud solicitud) {
         solicitudesEliminacion.add(solicitud);
