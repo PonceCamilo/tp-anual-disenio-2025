@@ -1,11 +1,38 @@
 @startuml
-'https://plantuml.com/sequence-diagram
 
-autonumber
+left to right direction
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+actor Visualizador
+actor Contribuyente
+actor Administrador as Administrador
+Contribuyente --|> Visualizador
+Administrador --|> Contribuyente
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+rectangle "MetaMapa" {
+
+    usecase "Iniciar sesión" as UC_Login
+
+    usecase "Ver hechos de colección" as UC_VerHechos
+    usecase "Crear hecho" as UC_CrearHecho
+    usecase "Solicitar eliminación" as UC_SolicitarEliminacion
+    usecase "Importar hechos" as UC_Importar
+    usecase "Leer archivo CSV" as UC_LeerCSV
+    usecase "Aceptar solicitud de eliminación" as UC_Aceptar
+    usecase "Rechazar solicitud de eliminación" as UC_Rechazar
+}
+
+Visualizador --> UC_VerHechos
+
+
+Contribuyente --> UC_Login
+
+Contribuyente --> UC_CrearHecho
+Contribuyente --> UC_SolicitarEliminacion
+
+Administrador --> UC_Importar
+Administrador --> UC_Aceptar
+Administrador --> UC_Rechazar
+
+UC_Importar --> UC_LeerCSV : <<include>>
+
 @enduml

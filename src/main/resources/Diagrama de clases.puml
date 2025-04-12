@@ -1,77 +1,110 @@
 @startuml
 
+class Visualizador
+
+class Contribuyente extends Visualizador{
+    - String nombre
+    - String apellido
+    - Interger edad
+    + void crearHecho(titulo, descripcion, latitud, longitud, fechaAcontecimiento)
+    + void solicitarEliminacionDeHecho(Hecho hecho)
+}
+
+class Administrador extends Contribuyente{
+    - List<Coleccion> MisColecciones
+    + void crearColeccion(String titulo, String descripcion)
+    + void importHechosDesdeArchivo(Coleccion coleccion)
+    + void aceptarSolicitud(Solicitud solicitud)
+    + void rechazarSolicitud(Solicitud solicitud)
+    + void etiquetarhecho(Hecho hecho)
+}
+
 class Hecho{
-
-    private String titulo
-    private String descripcion
-    private Categoria categoria
-    private Double latitud
-    private Double longitud
-    private Date fechaDelAcontecimiento
-    private Date fehcDeCarga
-    private Enum origen
-    private List<Solicitud> solicitudesEliminacion
+    - Boolean oculto
+    - String titulo
+    - String descripcion
+    - String categoria
+    - Etiqueta etiqueta
+    - Ubicacion CoordenadasDelHecho
+    - DateTime fechaAcontecimiento
+    - DateTime fechaCarga
+    - Origen OrigenHecho
+}
+class HechoMultimedia extends Hecho{
+    - String Multimedia
 }
 
-class Categoria {
-
-    private String nombre
+class Ubicacion{
+    - float latitud
+    - float longitud
 }
 
-class Solicitud {
-
-    private String descripcion
-    private Hecho hechoAdherido
-    private Boolean aprobada
+class Coleccion{
+    - String titulo
+    - String descripcion
+    - FuenteEstatica fuente
+    - List<Hecho> hechos
+    - List<CriterioDePertenencia> criteriosDepertenencia
+    + List<Hecho> buscarHechosConFiltros(List<Filtros>)
+    + List<Hecho> importarCvg(List<CriterioDePertenencia>)
+    + void agregarHecho(Hecho)
+    + void quitarHecho(Hecho)
+    + void agregarCriterio(CriterioDePertenencia)
+    + void quitarCriterio(CriterioDePertenencia)
 }
 
-class Colecciones{
-
-    private String titulo
-    private String descripcion
-    private List<Hecho> hechos
-    public void agregarHecho(Hecho hecho)
+ interface Fuente <<interface>>{
+    + List<Hecho> obtenerHechos()
 }
 
-class Fuente{
-
-    private String rutaArchivo;
-    public List<Hecho> obtenerHechos()
-
-}
-class Estatica extends Fuente {
-
-}
-class Dinamica extends Fuente {
-
+ class FuenteEstatica implements Fuente{
+    - String ubicacionDelArchivo
+    + List<Hecho> obtenerHechos()
 }
 
-class Visualizador {
-
-    public void agregarHecho(Hecho hecho)
+ class FuenteDinamica implements Fuente{
+    + List<Hecho> obtenerHechos()
 }
 
-class Persona extends Visualizador {
-
-    private String nombre
-    private String apellido
-    private Integer edad
+ class FuenteProxy implements Fuente{
+    + List<Hecho> obtenerHechos()
 }
 
-class Contribuyente extends Persona {
-
+interface CriterioDePertenencia{
+    + Boolean evaluarCriterio()
 }
 
-class Administrador extends Persona {
-
+class CriterioCategoria implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
 }
 
-Hecho "0..*" -- "1" Solicitud : solicitudesEliminacion
-Solicitud "1" -- "1" Hecho : hechoAdherido
-Colecciones "1" o-- "0..*" Hecho : hechos
-Fuente "1" --> "0..*" Hecho : administra
-Visualizador "1" --> "0..*" Hecho : muestra
-Persona "1" --> "0..*" Hecho : contribuye
-Hecho "1" --> "0..*" Categoria : categorizado
+class CriterioRangoFechaHora implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
+}
+
+class Criterioubicacion implements  CriterioDePertenencia{
+    + Boolean evaluarCriterio(Hecho hecho)
+}
+
+class SolicitudDeEliminacion{
+    - Hecho hecho
+    - String motivo
+    - Estado estado
+}
+
+enum Estado{
+    PENDIENTE
+    ACEPTADO
+}
+
+Coleccion *-- CriterioDePertenencia
+Coleccion --> Fuente
+Coleccion --> Hecho
+Hecho --> Origen
+Hecho *-- Ubicacion
+Fuente ..> Hecho
+SolicitudDeEliminacion --> Hecho
+SolicitudDeEliminacion --> Estado
+SolicitudDeEliminacion <.. Contribuyente
 
 @enduml
