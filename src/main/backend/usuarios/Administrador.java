@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hechos.SolicitudDeEliminacion;
+import hechos.Ubicacion;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +28,7 @@ public class Administrador {
     private List<Coleccion> colecciones;
 
     public Administrador() {
-
+        this.managerCategorias = new ManagerCategorias();
         this.colecciones = new ArrayList<>();
     }
 
@@ -77,8 +78,7 @@ public class Administrador {
             hechoObtenido.setTitulo(titulo);
             hechoObtenido.setDescripcion(descripcion);
             hechoObtenido.setCategoria(categoriaObtenida);
-            hechoObtenido.setLatitud(latitud);
-            hechoObtenido.setLongitud(longitud);
+            hechoObtenido.setUbicacion(new Ubicacion(latitud, longitud));
             hechoObtenido.setFechaDelAcontecimiento(fechaAcontecimiento);
 
             coleccionCreada.agregarHecho(hechoObtenido);

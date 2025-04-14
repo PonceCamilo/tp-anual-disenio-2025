@@ -3,6 +3,7 @@ package main;
 import hechos.Categoria;
 import hechos.Coleccion;
 import hechos.Hecho;
+import hechos.Ubicacion;
 import usuarios.Administrador;
 import usuarios.Contribuyente;
 import java.io.File;
@@ -66,8 +67,7 @@ public class Main {
         hecho.setTitulo("Desastre Natural");
         hecho.setDescripcion("Inundación severa en la región X");
         hecho.setCategoria(categoria);
-        hecho.setLatitud(-34.6037);
-        hecho.setLongitud(-58.3816);
+        hecho.setUbicacion(new Ubicacion(34.6037, -58.3816));
         hecho.setFechaDelAcontecimiento("2023-01-15");
         hecho.setFechaDeCarga("2023-01-16");
         hecho.setOrigen("Usuario");

@@ -14,8 +14,7 @@ public class Hecho {
     private String titulo;
     private String descripcion;
     private Categoria categoria;
-    private Double latitud;
-    private Double longitud;
+    private Ubicacion ubicacion;
     private String fechaDelAcontecimiento;
     private String fechaDeCarga;
     private String origen;

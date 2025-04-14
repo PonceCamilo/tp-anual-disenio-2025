@@ -15,7 +15,7 @@ public class ManagerCategorias {
 
   private Set<String> categorias;
 
-  public ManagerCategorias(Set<String> categorias) {
+  public ManagerCategorias() {
     this.categorias = new HashSet<>();
   }
 
