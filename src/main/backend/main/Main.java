@@ -21,7 +21,8 @@ public class Main {
      */
     public static void main(String[] args) throws URISyntaxException {
 
-        Administrador administrador = new Administrador();
+        List<Coleccion> colecciones = new ArrayList();
+        Administrador administrador = new Administrador(colecciones);
 
         File archivoAimportar1;
         File archivoAimportar2;

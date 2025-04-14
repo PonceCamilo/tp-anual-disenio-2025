@@ -1,8 +1,8 @@
 @startuml
 
-class Visualizador
 
-class Contribuyente extends Visualizador{
+
+class Contribuyente{
     - String nombre
     - String apellido
     - Interger edad
@@ -20,15 +20,23 @@ class Administrador extends Contribuyente{
 }
 
 class Hecho{
-    - Boolean oculto
+    - Long id
+    - Boolean visualizarHecho
     - String titulo
     - String descripcion
-    - String categoria
+    - Categoria categoria
     - Etiqueta etiqueta
     - Ubicacion CoordenadasDelHecho
     - DateTime fechaAcontecimiento
     - DateTime fechaCarga
     - Origen OrigenHecho
+}
+class Categoria{
+    - Long id
+    - String nombre
+}
+class ManagerCategoria{
+ - Set<String> categorias
 }
 class HechoMultimedia extends Hecho{
     - String Multimedia
@@ -82,19 +90,14 @@ class CriterioRangoFechaHora implements  CriterioDePertenencia{
     + Boolean evaluarCriterio(Hecho hecho)
 }
 
-class Criterioubicacion implements  CriterioDePertenencia{
+class CriterioUbicacion implements  CriterioDePertenencia{
     + Boolean evaluarCriterio(Hecho hecho)
 }
 
 class SolicitudDeEliminacion{
-    - Hecho hecho
-    - String motivo
+    - Hecho hechoSolicitado
+    - String descripcion
     - Estado estado
-}
-
-enum Estado{
-    PENDIENTE
-    ACEPTADO
 }
 
 Coleccion *-- CriterioDePertenencia
@@ -102,9 +105,10 @@ Coleccion --> Fuente
 Coleccion --> Hecho
 Hecho --> Origen
 Hecho *-- Ubicacion
+Hecho --> Categoria
 Fuente ..> Hecho
+ManagerCategoria --> Categoria
 SolicitudDeEliminacion --> Hecho
-SolicitudDeEliminacion --> Estado
 SolicitudDeEliminacion <.. Contribuyente
 
 @enduml

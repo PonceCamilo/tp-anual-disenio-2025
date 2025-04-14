@@ -12,7 +12,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ManagerCategorias {
-  public final Set<String> categorias = new HashSet<>();
+  private final Set<String> categorias
+
+  public ManagerCategorias(Set<String> categorias) {
+    this.categorias = new HashSet<>();
+  }
 
   /**
    * Normaliza una categoría eliminando espacios, caracteres especiales

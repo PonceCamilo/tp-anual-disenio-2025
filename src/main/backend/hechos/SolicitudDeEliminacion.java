@@ -8,8 +8,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Solicitud {
+public class SolicitudDeEliminacion {
 
     private String descripcion;
     private Hecho hechoSolicitado;
+    private Boolean SolicitudAceptado;
 }

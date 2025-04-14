@@ -15,12 +15,22 @@ public class Coleccion {
 
     private String titulo;
     private String descripcion;
-    public List<Hecho> hechos = new ArrayList<>();
-    public Integer contadorLineas = 0;
-    public Integer contadorRepetidos = 0;
-    public Integer contadorErrores = 0;
+    private FuenteEstatica fuente;
+    private List<Hecho> hechos;
+    private Integer contadorLineas;
+    private Integer contadorRepetidos;
+    private Integer contadorErrores;
+
+    public Coleccion(Integer contadorLineas, Integer contadorRepetidos, Integer contadorErrores, List<Hecho> hechos) {
+        this.contadorLineas = 0;
+        this.contadorRepetidos = 0;
+        this.contadorErrores = 0;
+        this.hechos = new ArrayList<>();
+    }
 
     public void agregarHecho(Hecho hecho) {
         this.hechos.add(hecho);
     }
+    public List<Hecho> buscarHechosConFiltros(List<Filtros> filtros){}
+    public List<Hecho> importarCsv(List<CriterioDePertenecia>)
 }

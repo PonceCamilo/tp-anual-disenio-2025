@@ -22,8 +22,13 @@ import lombok.Setter;
 @Setter
 public class Administrador {
 
-    private ManagerCategorias managerCategorias = new ManagerCategorias();
-    public List<Coleccion> colecciones = new ArrayList<>();
+    private ManagerCategorias managerCategorias
+    private List<Coleccion> colecciones
+
+    public Administrador(ManagerCategorias managerCategorias, List<Coleccion> colecciones) {
+
+        this.colecciones = colecciones;
+    }
 
     /**
      * Metodo para importar hechos desde archivos de tipo CSV.
@@ -163,5 +168,8 @@ public class Administrador {
         hecho.getSolicitudesEliminacion().remove(solicitud);
 
         System.out.println("solicitud rechazada");
+    }
+    public void etiquetarHecho(Hecho hecho){
+        //TODO
     }
 }
