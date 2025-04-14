@@ -19,10 +19,10 @@ public class Hecho {
     private String fechaDelAcontecimiento;
     private String fechaDeCarga;
     private String origen;
-    private List<Solicitud> solicitudesEliminacion;
+    private List<SolicitudDeEliminacion> solicitudesEliminacion;
     public Boolean visualizarHecho = true;
 
-    public void agregarSolicitud(Solicitud solicitud) {
+    public void agregarSolicitud(SolicitudDeEliminacion solicitud) {
         solicitudesEliminacion.add(solicitud);
     }
 }

@@ -2,7 +2,10 @@ package hechos;
 
 import java.util.ArrayList;
 import java.util.List;
+import filtros.CriterioDePertenencia;
 
+import filtros.Filtro;
+import fuentes.FuenteEstatica;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +24,7 @@ public class Coleccion {
     private Integer contadorRepetidos;
     private Integer contadorErrores;
 
-    public Coleccion(Integer contadorLineas, Integer contadorRepetidos, Integer contadorErrores, List<Hecho> hechos) {
+    public Coleccion() {
         this.contadorLineas = 0;
         this.contadorRepetidos = 0;
         this.contadorErrores = 0;
@@ -31,6 +34,12 @@ public class Coleccion {
     public void agregarHecho(Hecho hecho) {
         this.hechos.add(hecho);
     }
-    public List<Hecho> buscarHechosConFiltros(List<Filtros> filtros){}
-    public List<Hecho> importarCsv(List<CriterioDePertenecia>)
+    public List<Hecho> buscarHechosConFiltros(List<Filtro> filtros) {
+
+        return null;
+    }
+    public List<Hecho> importarCsv(List<CriterioDePertenencia> criteriosDePertenencia) {
+        // TODO
+        return null;
+    }
 }

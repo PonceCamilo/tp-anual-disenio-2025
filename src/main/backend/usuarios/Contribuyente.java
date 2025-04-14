@@ -1,7 +1,7 @@
 package usuarios;
 
 import hechos.Hecho;
-import hechos.Solicitud;
+import hechos.SolicitudDeEliminacion;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ public class Contribuyente {
      * Metodo para solicitar una eliminacion de un hecho.
      */
     public void solicitarEliminacionHecho(String descripcionSolicitud, Hecho hecho) {
-        Solicitud nuevaSolicitud = new Solicitud();
+        SolicitudDeEliminacion nuevaSolicitud = new SolicitudDeEliminacion();
 
         nuevaSolicitud.setDescripcion(descripcionSolicitud);
         nuevaSolicitud.setHechoSolicitado(hecho);

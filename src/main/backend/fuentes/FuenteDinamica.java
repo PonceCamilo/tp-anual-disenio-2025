@@ -8,6 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Dinamica extends Fuente {
+public class FuenteDinamica extends Fuente {
 
 }

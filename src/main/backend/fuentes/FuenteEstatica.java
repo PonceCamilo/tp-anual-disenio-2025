@@ -8,6 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Estatica extends Fuente{
+public class FuenteEstatica extends Fuente{
 
 }

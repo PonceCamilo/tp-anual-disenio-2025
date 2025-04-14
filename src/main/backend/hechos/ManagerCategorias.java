@@ -12,7 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ManagerCategorias {
-  private final Set<String> categorias
+
+  private Set<String> categorias;
 
   public ManagerCategorias(Set<String> categorias) {
     this.categorias = new HashSet<>();

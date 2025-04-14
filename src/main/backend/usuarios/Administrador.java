@@ -4,7 +4,6 @@ import hechos.Categoria;
 import hechos.Coleccion;
 import hechos.Hecho;
 import hechos.ManagerCategorias;
-import hechos.Solicitud;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import hechos.SolicitudDeEliminacion;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,12 +23,12 @@ import lombok.Setter;
 @Setter
 public class Administrador {
 
-    private ManagerCategorias managerCategorias
-    private List<Coleccion> colecciones
+    private ManagerCategorias managerCategorias;
+    private List<Coleccion> colecciones;
 
-    public Administrador(ManagerCategorias managerCategorias, List<Coleccion> colecciones) {
+    public Administrador() {
 
-        this.colecciones = colecciones;
+        this.colecciones = new ArrayList<>();
     }
 
     /**
@@ -151,7 +152,7 @@ public class Administrador {
     /**
      * Metodo para aprobar una solicitud de eliminacion.
      */
-    public void aceptarSolicitud(Solicitud solicitud) {
+    public void aceptarSolicitud(SolicitudDeEliminacion solicitud) {
         Hecho hecho = solicitud.getHechoSolicitado();
 
         hecho.setVisualizarHecho(false);
@@ -162,7 +163,7 @@ public class Administrador {
     /**
      * Metodo para rechazar una solicitud de eliminacion.
      */
-    public void rechazarSolicitud(Solicitud solicitud) {
+    public void rechazarSolicitud(SolicitudDeEliminacion solicitud) {
         Hecho hecho = solicitud.getHechoSolicitado();
 
         hecho.getSolicitudesEliminacion().remove(solicitud);

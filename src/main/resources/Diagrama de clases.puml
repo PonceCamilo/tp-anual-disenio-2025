@@ -1,7 +1,5 @@
 @startuml
 
-
-
 class Contribuyente{
     - String nombre
     - String apellido
@@ -31,13 +29,21 @@ class Hecho{
     - DateTime fechaCarga
     - Origen OrigenHecho
 }
+
 class Categoria{
     - Long id
     - String nombre
 }
+
 class ManagerCategoria{
  - Set<String> categorias
 }
+
+class Etiqueta{
+    - Long id
+    - String nombre
+}
+
 class HechoMultimedia extends Hecho{
     - String Multimedia
 }
@@ -100,12 +106,13 @@ class SolicitudDeEliminacion{
     - Estado estado
 }
 
-Coleccion *-- CriterioDePertenencia
+Coleccion *--> CriterioDePertenencia
 Coleccion --> Fuente
 Coleccion --> Hecho
 Hecho --> Origen
-Hecho *-- Ubicacion
+Hecho *--> Ubicacion
 Hecho --> Categoria
+Hecho *--> Etiqueta
 Fuente ..> Hecho
 ManagerCategoria --> Categoria
 SolicitudDeEliminacion --> Hecho
